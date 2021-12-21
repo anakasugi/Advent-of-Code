@@ -118,19 +118,17 @@ Day3 <- read_delim("~/Documents/Advent of Code/Day3.rtf", "\\", escape_double = 
                    trim_ws = TRUE, skip = 9)
 
 # TEST: Use substr() to extract the 1st element of each data point and find mode:
-# substr() takes vectors as input, which is why Day3[1] (= tibble) messes things up. Day3$X1 = vector.
 a <- substr(Day3$X1, 1, 1)
 table(a) # This works :)
 
 # break down each 12-character string in the original data into 12 separate variables
-
 a <- as.data.frame(a)
 
 for (i in 1:12){
   a[,i] <- substr(Day3$X1, i, i)
 } 
 
-# tabulate number of 0s and 1s and gather them into a new temp df "d"
+# tabulate number of 0s and 1s and gather them into a new df "d"
 for (i in 1:12){
   c <- as.data.frame(table(a[i]))
   d[i,] <- pivot_wider(c[2:3,], names_from = Var1, values_from = Freq)
@@ -142,7 +140,6 @@ for (i in 1:12){
 # Day 3: Problem 2 --------------------------------------------------------
 
 # First iteration
-# d = 2 columns ("0", "1") & 12 rows (bits #1 - #12)
 
 for (i in 1:1000){
   if (a$a[i] == "0"){
@@ -200,12 +197,11 @@ oxygen <- a
 
 Mode <- function(x) {
   ux <- unique(x)       # get unique values (in each column, when run for oxygen[,i])
-  # unique() tässä tekee Mode()-funktiosta yleispätevän - ts. ei heitä erroria,jos number of unique values > 2
   tab <- tabulate(match(x, ux))   # tabulate returns a vector of just the ncount of values (x,y,z) w/in a vector
   if (all(tab == tab[1])){  # if all values are the same as in position #1
-    "1"                     # kirjottaa sille sarakkeelle arvon 1
+    "1"                     
     } else {
-    ux[which.max(tab)]      # muuten kirjottaa sarakkeelle sen arvon, jolla on isompi ncount 
+    ux[which.max(tab)] 
   }
 }
 
@@ -216,17 +212,13 @@ for(i in 1:ncol(oxygen)){
   oxygen <- oxygen[oxygen[,i] == Mode(oxygen[,i]),]
 }
 
-# jos unohdat mitä tässä tapahtuu niin aja koodi osissa yhdelle i:n arvolle:
-# i = 2
-# oxygen[,i]
-# Mode(oxygen[,i])
 # oxygen[,i] == Mode(oxygen[,i])  returns logical values TRUE/FALSE
 # oxygen <- oxygen[oxygen[,i] == Mode(oxygen[,i]),] only keeps values that are TRUE
 
 oxygen_rating <- oxygen %>% 
   unlist(., use.names=FALSE) %>% # changes result into a single vector with 12 values (from 12 vars with 1 value each)
   paste0(collapse = "") %>% # collapses 12 values "0", "1", "0"... into a single value "010.."
-  strtoi(base = 2) # string to integer --> base = 2 transforming binary to decimal?
+  strtoi(base = 2) # string to integer --> base = 2 transforming binary to decimal
 
 # oxygen_rating = 1391
 
