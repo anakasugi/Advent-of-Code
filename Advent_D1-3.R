@@ -118,19 +118,17 @@ Day3 <- read_delim("~/Documents/Advent of Code/Day3.rtf", "\\", escape_double = 
                    trim_ws = TRUE, skip = 9)
 
 # TEST: Use substr() to extract the 1st element of each data point and find mode:
-# substr() takes vectors as input, which is why Day3[1] (= tibble) messes things up. Day3$X1 = vector.
 a <- substr(Day3$X1, 1, 1)
 table(a) # This works :)
 
 # break down each 12-character string in the original data into 12 separate variables
-
 a <- as.data.frame(a)
 
 for (i in 1:12){
   a[,i] <- substr(Day3$X1, i, i)
 } 
 
-# tabulate number of 0s and 1s and gather them into a new temp df "d"
+# tabulate number of 0s and 1s and gather them into a new df "d"
 for (i in 1:12){
   c <- as.data.frame(table(a[i]))
   d[i,] <- pivot_wider(c[2:3,], names_from = Var1, values_from = Freq)
@@ -142,7 +140,6 @@ for (i in 1:12){
 # Day 3: Problem 2 --------------------------------------------------------
 
 # First iteration
-# d = 2 columns ("0", "1") & 12 rows (bits #1 - #12)
 
 for (i in 1:1000){
   if (a$a[i] == "0"){
