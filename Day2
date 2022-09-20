@@ -1,0 +1,59 @@
+# Day 2: Problem 1 ---------------------------------------------------------
+
+# Q: a) Forward sum with N+ numbers and b) Depth sum with N numbers
+
+Day2 <- read_delim("~/Documents/Advent of Code/Day2.csv", ";", trim_ws = TRUE)
+
+day2 <- Day2[2:5] %>% 
+  rename(forward = X4, depth = X5)
+
+for (i in 1:nrow(day2)){
+  if (day2$direction[i] == "forward") {
+    day2$forward[i] <- day2$steps[i] 
+  } else if (day2$direction[i] == "down") {
+    day2$depth[i] <- day2$steps[i]
+  } else {
+    day2$depth[i] <- day2$steps[i]*(-1)
+  }
+}
+
+sumforward <- sum(day2$forward, na.rm = TRUE)
+sumdepth <- sum(day2$depth, na.rm = TRUE)
+sumforward*sumdepth # Answer: 1660158
+
+
+# Day 2: Problem 2 ---------------------------------------------------------
+
+# Q: a) Forward sum unchanged, b) Depth sum dependent on current value of forward -vector
+
+day2 <- day2 %>% 
+  add_column(aim = 0) %>% 
+  add_column(depthsum = 0)
+
+
+for (i in 1:nrow(day2)){
+  if (day2$direction[i] == "forward"){
+    day2$depth[i] <- 0
+  } 
+}
+
+# Preparing the aim -vector
+for (i in 2:nrow(day2)){
+  if (day2$direction[i] == "forward"){
+    day2$aim[i] <- day2$aim[i-1]
+  } else {
+    day2$aim[i] <- day2$aim[i-1] + day2$depth[i]
+  }
+} 
+
+# Calculating cumulative depth
+for (i in 2:nrow(day2)){
+  if (day2$direction[i] == "forward"){
+    day2$depthsum[i] <- day2$depthsum[i-1] + day2$aim[i] * day2$forward[i]
+  } else {
+    day2$depthsum[i] <- day2$depthsum[i-1]
+  }
+} 
+
+forwardsum <- sum(day2$forward, na.rm = TRUE)
+forwardsum * day2$depthsum[1000] # Answer: 1604592846
